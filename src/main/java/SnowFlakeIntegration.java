@@ -1,5 +1,4 @@
 import java.sql.*;
-import java.util.Calendar;
 import java.util.Properties;
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -30,7 +29,8 @@ public class SnowFlakeIntegration {
             String query5 = "select Now() as now_function, Now() at timezone 'America/Chicago' as central_time, Now() at timezone 'UTC' as utc_time;";
             String query3 = "SELECT CURRENT_TIMESTAMP;";
             String query4 = "SELECT * FROM MILL_INT_TEST_DB.MILL_INT_TEST_EDW_PDS_SCHEMA.QUERY_MERGE1;";
-            ResultSet resultSet = stat.unwrap(SnowflakeStatement.class).executeAsyncQuery(query2);
+            String query6 = "select current_timestamp as now_time, to_char(convert_timezone('America/Denver',current_timestamp())) as denver, to_char(convert_timezone('Asia/Kolkata',current_timestamp())) as india;";
+            ResultSet resultSet = stat.unwrap(SnowflakeStatement.class).executeAsyncQuery(query6);
             QueryStatus queryStatus = QueryStatus.RUNNING;
             while (queryStatus == QueryStatus.RUNNING) {
                 Thread.sleep(200); // 2000 milliseconds.
@@ -49,6 +49,7 @@ public class SnowFlakeIntegration {
                         int numColumns = resultSetMetaData.getColumnCount();
                         JSONObject obj = new JSONObject();
                         for (int i = 1; i <= numColumns; i++) {
+                            System.out.println(resultSetMetaData.getColumnName(i) + ':' +  resultSetMetaData.getColumnTypeName(i));
                             String column_name = resultSetMetaData.getColumnName(i);
                             obj.put(column_name, rs.getObject(column_name));
                         }
