@@ -1,6 +1,6 @@
 # snowflake_jdbc_poc
 
-###Steps to try Out
+### Steps to try Out
  - `mvn clean install`
  - Run SnowflakeIntegration.java 
 
