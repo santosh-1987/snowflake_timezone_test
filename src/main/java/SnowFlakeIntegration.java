@@ -26,10 +26,11 @@ public class SnowFlakeIntegration {
         try (Connection conn = getConnection(url, prop)) {
             Statement stat = conn.createStatement();
             String query1 = "use role bundled_role_ba0bbf50_5796_403e_b931_aa46b76382f4;";
-            String query2 = "select Now() as now_function, at_timezone(Now(),'Asia/Kolkata') as central_time;";
+            String query2 = "select Now() as now_function, at_timezone(Now(),'America/Denver') as denver, at_timezone(Now(),'Asia/Kolkata') as india;";
+            String query5 = "select Now() as now_function, Now() at timezone 'America/Chicago' as central_time, Now() at timezone 'UTC' as utc_time;";
             String query3 = "SELECT CURRENT_TIMESTAMP;";
             String query4 = "SELECT * FROM MILL_INT_TEST_DB.MILL_INT_TEST_EDW_PDS_SCHEMA.QUERY_MERGE1;";
-            ResultSet resultSet = stat.unwrap(SnowflakeStatement.class).executeAsyncQuery(query4);
+            ResultSet resultSet = stat.unwrap(SnowflakeStatement.class).executeAsyncQuery(query2);
             QueryStatus queryStatus = QueryStatus.RUNNING;
             while (queryStatus == QueryStatus.RUNNING) {
                 Thread.sleep(200); // 2000 milliseconds.
