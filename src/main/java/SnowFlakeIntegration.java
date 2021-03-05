@@ -16,7 +16,7 @@ import static java.sql.DriverManager.*;
 public class SnowFlakeIntegration {
     public static void main(String[] args)
             throws Exception {
-        String url = "jdbc:snowflake://cerner_stage.snowflakecomputing.com?allowMultiQueries=true";
+        String url = "jdbc:snowflake://******.snowflakecomputing.com?allowMultiQueries=true";
         Properties prop = new Properties();
         prop.put("user", "mill_int_query_user");
         prop.put("password", "*********");
@@ -30,7 +30,10 @@ public class SnowFlakeIntegration {
             String query3 = "SELECT CURRENT_TIMESTAMP;";
             String query4 = "SELECT * FROM MILL_INT_TEST_DB.MILL_INT_TEST_EDW_PDS_SCHEMA.QUERY_MERGE1;";
             String query6 = "select current_timestamp as now_time, to_char(convert_timezone('America/Denver',current_timestamp())) as denver, to_char(convert_timezone('Asia/Kolkata',current_timestamp())) as india;";
-            ResultSet resultSet = stat.unwrap(SnowflakeStatement.class).executeAsyncQuery(query6);
+            String query7=  "select convert_timezone('UTC', 'America/Chicago', current_timestamp()::timestamp_ntz) as Chicago_Time;";
+            String query8 = "select convert_timezone('America/Chicago', current_timestamp()::timestamp_tz) as Chicago_Time;";
+            String query9 = "select current_timestamp(5)";
+            ResultSet resultSet = stat.unwrap(SnowflakeStatement.class).executeAsyncQuery(query8);
             QueryStatus queryStatus = QueryStatus.RUNNING;
             while (queryStatus == QueryStatus.RUNNING) {
                 Thread.sleep(200); // 2000 milliseconds.
@@ -49,6 +52,8 @@ public class SnowFlakeIntegration {
                         int numColumns = resultSetMetaData.getColumnCount();
                         JSONObject obj = new JSONObject();
                         for (int i = 1; i <= numColumns; i++) {
+                            System.out.println("Executing: " + query8);
+                            System.out.println("Output");
                             System.out.println(resultSetMetaData.getColumnName(i) + ':' +  resultSetMetaData.getColumnTypeName(i));
                             String column_name = resultSetMetaData.getColumnName(i);
                             obj.put(column_name, rs.getObject(column_name));
